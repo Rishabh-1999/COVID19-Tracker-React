@@ -3,45 +3,83 @@ import { Container } from "react-bootstrap";
 import axios from "axios";
 import DataHeader from "../DataHeader/DataHeader";
 import List from "../List/List";
+import FavList from "../FavStates/FavStates";
 
 class Mainpart extends Component {
   state = {
     summary: Object,
-    data: []
+    states: [],
+    favstates: []
   };
 
   componentDidMount() {
+    this.addToFav.bind(this);
     this.getData();
   }
 
-  async addTotal() {
-    var d = this.state.data;
+  async addTotalAndFav(d) {
     d.map(s => {
+      s.fav =
+        this.state.fav.find(loc => loc === s.loc) !== undefined ? true : false;
       s.total = s.confirmedCasesIndian + s.confirmedCasesForeign;
       return s;
     });
-    this.setState({ data: d });
+    return d;
+  }
+
+  async manipulateData(res) {
+    res = await this.addTotalAndFav(res);
+
+    var temp_states = this.state.states;
+    var temp_favstates = this.state.favstates;
+
+    for (var i = 0; i < res.length; i++) {
+      if (res[i].fav) {
+        temp_favstates.push(res[i]);
+      } else {
+        temp_states.push(res[i]);
+      }
+    }
+    this.setState({ states: temp_states, favstates: temp_favstates });
   }
 
   async getData() {
+    var fav_temp = JSON.parse(
+      await window.localStorage.getItem("covidstatesfav")
+    );
+    if (fav_temp === undefined || fav_temp === null) this.setState({ fav: [] });
+    else this.setState({ fav: fav_temp });
     await axios
       .get("https://api.rootnet.in/covid19-in/stats/latest")
       .then(res => {
         return res.data.data;
       })
       .then(res => {
-        console.log(res);
         this.setState({ summary: res.summary });
-        this.setState({ data: res.regional });
-        this.addTotal();
+        this.manipulateData(res.regional);
+        //this.setState({ data: res.regional });
       });
+  }
+
+  async addToFav(event) {
+    this.state.fav.push(event);
+    window.localStorage.setItem(
+      "covidstatesfav",
+      JSON.stringify(this.state.fav)
+    );
+    window.location.reload();
   }
 
   render() {
     return (
       <Container>
         <DataHeader summary={this.state.summary} />
-        <List getData={this.getData} states={this.state.data} />
+        <FavList states={this.state.favstates} getData={this.getData} />
+        <List
+          states={this.state.states}
+          getData={this.getData}
+          addToFav={this.addToFav.bind(this)}
+        />
       </Container>
     );
   }
