@@ -1,20 +1,17 @@
 import React from "react";
 
-function ListItem(props) {
+function FavListItem(props :any) {
   const ddata =
     props.states.length > 0
-      ? props.states.map(state => {
+      ? props.states.map((state :any) => {
           return (
             <div
               className="card m-2"
               key={state.loc}
               style={{ width: "300px" }}
             >
-              <h5
-                className="card-header btn bg-primary"
-                onClick={() => !state.fav && props.addToFav(state.loc)}
-                name={state.loc}
-              >
+              <h5 className="card-header btn bg-primary">
+                <i className="fa fa-star"/>
                 {state.loc}
               </h5>
               <div className="card-body">
@@ -57,10 +54,17 @@ function ListItem(props) {
       : "";
 
   return (
-    <div className="container">
-      <div className="row w-100 mt-2">{ddata}</div>
-    </div>
+    props.states.length !== 0 && (
+      <div className="container mb-lg-5">
+        <div>
+          <h2>
+            <u>Favourite State</u>
+          </h2>
+        </div>
+        <div className="row w-100 mt-2">{ddata}</div>
+      </div>
+    )
   );
 }
 
-export default ListItem;
+export default FavListItem;

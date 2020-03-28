@@ -18,9 +18,9 @@ class Mainpart extends Component {
   }
 
   async addTotalAndFav(d) {
-    d.map(s => {
+    d.map( (s) => {
       s.fav =
-        this.state.fav.find(loc => loc === s.loc) !== undefined ? true : false;
+        this.state.fav.find(loc => loc === s.loc) !== undefined;
       s.total = s.confirmedCasesIndian + s.confirmedCasesForeign;
       return s;
     });

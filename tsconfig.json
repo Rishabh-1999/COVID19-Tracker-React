@@ -6,7 +6,7 @@
     "jsx": "preserve",
     "sourceMap": true,
     "outDir": "./build",
-    "rootDir": "./src",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,

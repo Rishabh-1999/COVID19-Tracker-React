@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Col, Row } from "react-bootstrap";
 
-function Dataheader(props) {
+function Dataheader(props :any ) {
   return (
     <Container
       style={{
