@@ -19,8 +19,7 @@ class Mainpart extends Component {
 
   async addTotalAndFav(d) {
     d.map( (s) => {
-      s.fav =
-        this.state.fav.find(loc => loc === s.loc) !== undefined;
+      s.fav = this.state.fav.find(loc => loc === s.loc) !== undefined;
       s.total = s.confirmedCasesIndian + s.confirmedCasesForeign;
       return s;
     });
@@ -29,11 +28,11 @@ class Mainpart extends Component {
 
   async manipulateData(res) {
     res = await this.addTotalAndFav(res);
+    console.log(this.state);
+    let temp_states = this.state.states;
+    let temp_favstates = this.state.favstates;
 
-    var temp_states = this.state.states;
-    var temp_favstates = this.state.favstates;
-
-    for (var i = 0; i < res.length; i++) {
+    for (let i = 0; i < res.length; i++) {
       if (res[i].fav) {
         temp_favstates.push(res[i]);
       } else {
@@ -44,11 +43,13 @@ class Mainpart extends Component {
   }
 
   async getData() {
-    var fav_temp = JSON.parse(
-      await window.localStorage.getItem("covidstatesfav")
+    let fav_temp = JSON.parse(
+        await window.localStorage.getItem("covidstatesfav")
     );
-    if (fav_temp === undefined || fav_temp === null) this.setState({ fav: [] });
-    else this.setState({ fav: fav_temp });
+    if (fav_temp === undefined || fav_temp === null)
+      this.setState({ fav: [] });
+    else
+      this.setState({ fav: fav_temp });
     await axios
       .get("https://api.rootnet.in/covid19-in/stats/latest")
       .then(res => {
