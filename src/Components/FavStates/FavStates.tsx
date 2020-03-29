@@ -130,11 +130,6 @@ function FavListItem(props :any) {
     return (
         props.states.length !== 0 && (
             <div className="container mb-lg-5">
-                <div>
-                    <h2>
-                        <u>Favourite State</u>
-                    </h2>
-                </div>
                 <div className="row w-100 mt-2">{ddata}</div>
             </div>
         )
