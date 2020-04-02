@@ -19,7 +19,7 @@ function ListItem(props :any) {
                                     {state.loc}
                                 </h5>
                                 :
-                                state.low === true ?
+                                state.medium === true ?
                                     <h5
                                         className="card-header btn bg-warning"
                                         onClick={() => !state.fav && props.addToFav(state.loc)}
