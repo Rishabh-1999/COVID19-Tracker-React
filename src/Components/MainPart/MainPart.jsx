@@ -9,8 +9,10 @@ import Chart from "../Chart/Chart";
 class Mainpart extends Component {
   state = {
     summary: Object,
+    todays: { recovered: 0, cases: 0, death: 0 },
     states: [],
     favstates: [],
+    yesterday: [],
     chartData: {
       labels: [],
       datasets: [{ data: [], label: "", backgroundColor: [] }],
@@ -22,22 +24,22 @@ class Mainpart extends Component {
     var r = num >> 16;
     var g = (num >> 8) & 255;
     var b = num & 255;
-    console.log("'rgba(" + r + ", " + g + ", " + b + ", 0.6" + ")'");
     return "rgba(" + r + ", " + g + ", " + b + ", 0.6" + ")";
   }
 
   componentDidMount() {
     this.addToFav.bind(this);
-    this.getData();
+    this.getDataOfLastest().then(() => {
+      this.getDataOfHistory();
+    });
   }
 
   async addTotalAndFav(d) {
     this.state.chartData.datasets[0].label = "State";
     await d.map(async (s) => {
       s.fav = this.state.fav.find((loc) => loc === s.loc) !== undefined;
-      s.total = s.confirmedCasesIndian + s.confirmedCasesForeign;
       this.state.chartData.labels.push(s.loc);
-      this.state.chartData.datasets[0].data.push(s.total);
+      this.state.chartData.datasets[0].data.push(s.totalConfirmed);
       this.state.chartData.datasets[0].backgroundColor.push(
         await this.getRandomColor()
       );
@@ -49,8 +51,8 @@ class Mainpart extends Component {
   async checkHighLow(res) {
     let high = 0;
     res.map((state) => {
-      if (high < state.total) {
-        high = state.total;
+      if (high < state.totalConfirmed) {
+        high = state.totalConfirmed;
       }
       return state;
     });
@@ -61,15 +63,30 @@ class Mainpart extends Component {
     let divider_h = high - (high - 1) / 3,
       divider_m = high - 2 * ((high - 1) / 3);
     res.map((state) => {
-      if (state.total >= divider_h) state.high = true;
-      else if (state.total > divider_m) state.medium = true;
+      if (state.totalConfirmed >= divider_h) state.high = true;
+      else if (state.totalConfirmed > divider_m) state.medium = true;
       return state;
     });
     return res;
   }
 
+  async findIncrease(res) {
+    let ttodays = this.state.todays;
+    res.map((state) => {
+      let found = this.state.yesterday.find((s) => s.loc === state.loc);
+      state.increase = state.totalConfirmed - found.totalConfirmed;
+      ttodays.cases += state.increase;
+      ttodays.recovered = state.discharged - found.discharged;
+      ttodays.death = state.deaths - found.deaths;
+    });
+    this.setState({ todays: ttodays });
+    return res;
+  }
+
   async manipulateData(res) {
-    res = await this.checkHighLow(await this.addTotalAndFav(res));
+    res = await this.findIncrease(
+      await this.checkHighLow(await this.addTotalAndFav(res))
+    );
     let temp_states = this.state.states;
     let temp_favstates = this.state.favstates;
 
@@ -83,7 +100,7 @@ class Mainpart extends Component {
     this.setState({ states: temp_states, favstates: temp_favstates });
   }
 
-  async getData() {
+  async getDataOfHistory() {
     let fav_temp = JSON.parse(
       await window.localStorage.getItem("covidstatesfav")
     );
@@ -101,6 +118,17 @@ class Mainpart extends Component {
       });
   }
 
+  async getDataOfLastest() {
+    await axios
+      .get("https://api.rootnet.in/covid19-in/stats/history")
+      .then((res) => {
+        return res.data.data;
+      })
+      .then(async (res) => {
+        this.setState({ yesterday: res[res.length - 2].regional });
+      });
+  }
+
   async addToFav(event) {
     this.state.fav.push(event);
     window.localStorage.setItem(
@@ -113,12 +141,15 @@ class Mainpart extends Component {
   render() {
     return (
       <Container>
-        <DataHeader summary={this.state.summary} />
+        <DataHeader summary={this.state.summary} todays={this.state.todays} />
         <Chart chartData={this.state.chartData} />
-        <FavListItem states={this.state.favstates} getData={this.getData} />
+        <FavListItem
+          states={this.state.favstates}
+          getDataOfHistory={this.getDataOfHistory}
+        />
         <List
           states={this.state.states}
-          getData={this.getData}
+          getDataOfHistory={this.getDataOfHistory}
           addToFav={this.addToFav.bind(this)}
         />
       </Container>

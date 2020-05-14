@@ -11,20 +11,49 @@ function FavListItem(props: any) {
               style={{ width: "300px" }}
             >
               {state.high === true ? (
-                <h5 className="card-header btn bg-danger text-white">
-                  <i className="fa fa-star" />
-                  {state.loc}
-                </h5>
+                <div className="card-header btn bg-danger font-weight-bolder d-flex">
+                  <h5 style={{ flex: 3 }}>
+                    <i className="fa fa-star" />
+                    {state.loc}
+                  </h5>
+                  <p style={{ flex: 1 }}>
+                    <i className="fa fa-arrow-up" style={{ color: "red" }}></i>{" "}
+                    &nbsp;
+                    {state.increase}
+                  </p>
+                </div>
               ) : state.meduim === true ? (
-                <h5 className="card-header btn bg-warning">
-                  <i className="fa fa-star" />
-                  {state.loc}
-                </h5>
+                <div className="card-header btn bg-warning font-weight-bolder d-flex">
+                  <h5 style={{ flex: 3 }}>
+                    {" "}
+                    <i className="fa fa-star" />
+                    {state.loc}
+                  </h5>
+                  <p style={{ flex: 1 }}>
+                    <i
+                      className="fa fa-arrow-up"
+                      style={{ color: "orange" }}
+                    ></i>
+                    &nbsp;
+                    {state.increase}
+                  </p>
+                </div>
               ) : (
-                <h5 className="card-header btn bg-primary">
-                  <i className="fa fa-star" />
-                  {state.loc}
-                </h5>
+                <div className="card-header btn bg-primary font-weight-bolder d-flex">
+                  <h5 style={{ flex: 3 }}>
+                    {" "}
+                    <i className="fa fa-star" />
+                    {state.loc}
+                  </h5>
+                  <p style={{ flex: 1 }}>
+                    <i
+                      className="fa fa-arrow-up"
+                      style={{ color: "green" }}
+                    ></i>
+                    &nbsp;
+                    {state.increase}
+                  </p>
+                </div>
               )}
               <div className="card-body">
                 <ul className="list-group">
@@ -32,47 +61,15 @@ function FavListItem(props: any) {
                     Total
                     {state.high === true ? (
                       <span className="badge badge-danger badge-pill">
-                        {state.total}
+                        {state.totalConfirmed}
                       </span>
                     ) : state.low === true ? (
                       <span className="badge badge-warning badge-pill">
-                        {state.total}
+                        {state.totalConfirmed}
                       </span>
                     ) : (
                       <span className="badge badge-primary badge-pill">
-                        {state.total}
-                      </span>
-                    )}
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    Confirmed Cases Indian
-                    {state.high === true ? (
-                      <span className="badge badge-danger badge-pill">
-                        {state.confirmedCasesIndian}
-                      </span>
-                    ) : state.low === true ? (
-                      <span className="badge badge-warning badge-pill">
-                        {state.confirmedCasesIndian}
-                      </span>
-                    ) : (
-                      <span className="badge badge-primary badge-pill">
-                        {state.confirmedCasesIndian}
-                      </span>
-                    )}
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    Confirmed Cases Foreign
-                    {state.high === true ? (
-                      <span className="badge badge-danger badge-pill">
-                        {state.confirmedCasesForeign}
-                      </span>
-                    ) : state.low === true ? (
-                      <span className="badge badge-warning badge-pill">
-                        {state.confirmedCasesForeign}
-                      </span>
-                    ) : (
-                      <span className="badge badge-primary badge-pill">
-                        {state.confirmedCasesForeign}
+                        {state.totalConfirmed}
                       </span>
                     )}
                   </li>
