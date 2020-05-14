@@ -114,7 +114,6 @@ class Mainpart extends Component {
       .then((res) => {
         this.setState({ summary: res.summary });
         this.manipulateData(res.regional);
-        //this.setState({ data: res.regional });
       });
   }
 
