@@ -1,12 +1,10 @@
-const {
-  createServer
-} = require("http");
+const { createServer } = require("http");
 const express = require("express");
 const compression = require("compression");
 const morgan = require("morgan");
 const path = require("path");
 
-const normalizePort = port => parseInt(port, 10);
+const normalizePort = (port) => parseInt(port, 10);
 const PORT = normalizePort(process.env.PORT || 5000);
 
 const app = express();
@@ -30,7 +28,7 @@ if (dev) {
 
 const server = createServer(app);
 
-server.listen(PORT, err => {
+server.listen(PORT, (err) => {
   if (err) throw err;
 
   console.log("Server Started");
